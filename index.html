@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Jquery Validation</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css" type="text/css">
+	<link rel="stylesheet" type="text/css" href="css/screen.css">
+	<style type="text/css">
+		body{
+			background: url("image/back-wallpaper.jpg") no-repeat center fixed;
+			background-size: cover;
+		}
+		.form-box{
+			width: 100%;
+			height: auto;
+			padding: 15px 25px;
+			margin: 15px auto;
+			border-radius: 5px;
+			box-shadow: 0px 0px 15px 1px gray;
+			background-color: white;
+		}
+		form label.error {
+			display: none;
+		}
+	</style>
+	</head>
+<body>
+	
+ <div class="container-fluid">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-6 form-box">
+				<h1 class="text-center pb-3 border-bottom">Registration Form Validation</h1>
+				<form method="post" id="validate_form">
+					<div class="form-group has-feedback has-error">
+						<label for="username">User name</label>
+						<input type="text" class="form-control" id="username" name="username" placeholder="User name" />
+					</div>
+				  <div class="form-group">
+					<label for="emailadd">Email address *</label>
+					<input type="email" class="form-control" id="emailadd" name="emailadd" placeholder="Enter email">
+				  </div>
+				  <div class="form-group">
+					<label for="phonenum">Phone Number *</label>
+					<input type="tel" class="form-control" id="phonenum" name="phonenum" placeholder="Phone Number">
+				  </div>
+				  <div class="form-group">
+					<label for="pass1">Password *</label>
+					<input type="password" class="form-control" id="pass1" name="pass1" placeholder="Password">
+				  </div>
+				  <div class="form-group">
+					<label for="confirmpass">Confirm Password *</label>
+					<input type="password" class="form-control" id="confirmpass" name="confirmpass" placeholder="Confirm Password">
+				  </div>
+				  <div class="form-group">
+					<label for="message">Message *</label>
+					<textarea class="form-control" id="message" name="message" rows="3" placeholder="Message For Us"></textarea>
+				  </div>
+					<div class="form-group">
+						<label for="country">Country *</label>
+						<select class="form-control" id="country" name="country">
+							<option value="">Choice</option>
+							<option value="Germany">Germany</option>
+							<option value="USA">USA</option>
+							<option value="UK">UK</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="dob">Date Of Birth *</label>
+						<input type="date" class="form-control" id="dob" name="dob">
+					</div>
+					<div class="form-group">
+						<label>Gender  * :- </label>
+						<label class="form-check form-check-inline" for="gen_male">
+						  <input class="form-check-input" type="radio" name="gender" id="gen_male" value="Male" required>Male
+						</label>
+						<label class="form-check form-check-inline" for="gen_female">
+						  <input class="form-check-input" type="radio" name="gender" id="gen_female" value="Female">Female
+						</label>
+						<label class="form-check form-check-inline" for="gen_other">
+						  <input class="form-check-input" type="radio" name="gender" id="gen_other" value="Other">Other
+						</label>
+						<label for="gender" class="error">Please select your gender</label>
+					</div>
+				  <div class="form-group">
+				  	<label for="policy">Accept Policy : </label>
+					<input type="checkbox" id="policy" name="policy">
+				  </div>
+				  <button type="submit" name="submit" class="btn btn-primary w-100" id="submit">Submit</button>
+				</form>			
+			</div>
+		</div>
+	</div> 
+</div>	
+	
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" type="text/javascript"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/js/bootstrap.min.js" type="text/javascript"></script>	
+
+<script type="text/javascript" src="Jquery-plugin/jquery.validate.js"></script>
+<script type="text/javascript">
+	
+	$(document).ready(function (){
+
+		$.validator.setDefaults({
+			submitHandler:function(){
+				alert("Submited");
+				console.log("Submited");
+			}
+		});
+
+		$.validator.addMethod("regex", function(value, element, regexp){
+			var re = new RegExp(regexp);
+			return this.optional(element) || re.test(value);
+		}, "Please Check Your Input" );
+
+		$.validator.addMethod("checknull", function(value, element, arg){
+			return arg !== value;
+		}, "Please Check Your input" );
+
+		$('#validate_form').validate({
+
+			rules : {
+				username : {
+					required : {
+						depends:function(){
+							$(this).val($.trim($(this).val()));
+							return true;
+						}
+					},
+					minlength : 3,
+					maxlength : 30
+				},
+				emailadd : {
+					required : true,
+					minlength : 10
+				},
+				phonenum : {
+					required : true,
+					regex : /^[+]?(\d{1,2})?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/
+				},
+				pass1 : {
+					required : true,
+					minlength : 5,
+					maxlength : 20
+				},
+				confirmpass : {
+					required : true,
+					minlength : 5,
+					maxlength : 20,
+					equalTo : "#pass1"
+				},
+				message : {
+					required : true,
+					minlength : 10
+				},
+				country : {
+					checknull : ""
+				},
+				dob : {
+					checknull : ""
+				},
+				policy : {
+					required : true
+				}
+
+			},
+			messages : {
+				username : {
+					required : "Please Enter User Name",
+					minlength : "Please Enter Valid User Name", 
+					maxlength : "User Name is Too Long"
+				},
+				emailadd : {
+					required : "Please Enter Email Address",
+					minlength : "Please Enter Valid Email"
+				},
+				phonenum : {
+					required : "Please Enter Phone Number",
+					regex : "Enter Number On Proper Format"
+				},
+				pass1 : {
+					required : "Please Enter Password",
+					minlength : "Minumun 5 Charter Required",
+					maxlength : "Password Too Long (20 Allow)"
+				},
+				confirmpass : {
+					required : "Please Enter Confirm Password",
+					minlength : "Minumun 5 Charter Required",
+					maxlength : "Password Too Long (20 Allow)",
+					equalTo : "Password Does Not Match"
+				},
+				message : {
+					required : "Please Enter Message",
+					minlength : "Please Enter More then 10 Charater"
+				},
+				country : {
+					checknull : "Please Select Country"
+				},
+				dob : {
+					checknull : "Please Select Date Of Birth"
+				},
+				policy : {
+					required : "Please Agree With Our Policy"
+				}
+
+			},
+			highlight:function(element){
+				$(element).addClass("is-invalid").removeClass("is-valid");
+			},
+			unhighlight:function(element){
+				$(element).addClass("is-valid").removeClass("is-invalid");
+			}
+
+		})
+
+	});
+
+</script>
+</body>
+</html>
+
